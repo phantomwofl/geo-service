@@ -1,0 +1,43 @@
+package ru.netology.sender;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import ru.netology.geo.GeoServiceImpl;
+import ru.netology.i18n.LocalizationServiceImpl;
+
+import java.util.HashMap;
+import java.util.Map;
+
+class MessageSenderImpTest {
+
+    @BeforeAll
+    public static void started() {
+        System.out.println("Test start");
+    }
+
+    @AfterAll
+    public static void finished() {
+        System.out.println("Test complete");
+    }
+
+    @Test
+    public void sendTest () {
+        LocalizationServiceImpl localizationServiceImpl = Mockito.mock(LocalizationServiceImpl.class);
+//        Mockito.when(localizationServiceImpl.locale(Country.RUSSIA))
+//                .thenReturn("Добро пожаловать");
+
+        GeoServiceImpl geoServiceImpl = Mockito.mock(GeoServiceImpl.class);
+//        Mockito.when(geoServiceImpl.byIp(GeoServiceImpl.MOSCOW_IP))
+//                .thenReturn(new Location("Moscow", Country.RUSSIA, "Lenina", 15));
+
+        MessageSenderImpl messageSenderImpl = new MessageSenderImpl(geoServiceImpl, localizationServiceImpl);
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put(MessageSenderImpl.IP_ADDRESS_HEADER, "172.123.12.19");
+        String resultat = messageSenderImpl.send(headers);
+        String expected = "Добро пожаловать";
+        Assertions.assertEquals(expected, resultat);
+    }
+}
